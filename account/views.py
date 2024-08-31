@@ -10,6 +10,9 @@ from .models import User
 
 
 class RegisterUserApiView(generics.GenericAPIView):
+    """
+    Register a new user.
+    """
     serializer_class = RegisterUserSerializers
     parser_classes = (MultiPartParser,)
 
@@ -23,15 +26,30 @@ class RegisterUserApiView(generics.GenericAPIView):
 
 
 class ChangePasswordApiView(generics.UpdateAPIView):
+    """
+    An endpoint for changing password.
+    """
     serializer_class = ChangePasswordSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,]
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return self.request.user
+
+    def update(self, request):
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data)
+        if serializer.is_valid():
+            user.set_password(serializer.validated_data.get("password"))
+            user.save()
+            return Response({'message': 'Password Updated successfully!'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProfileUserApiView(generics.RetrieveAPIView):
+    """
+    Retrieve user profile.
+    """
     serializer_class = ProfileUserSerializers
 
     def get_object(self):
@@ -39,8 +57,12 @@ class ProfileUserApiView(generics.RetrieveAPIView):
 
 
 class ProfileUserUpdateApiView(generics.UpdateAPIView):
+    """
+    Update user profile.
+    """
     serializer_class = ProfileUserUpdateSerializers
     parser_classes = (MultiPartParser,)
+    permission_classes = [IsAuthenticated,]
 
     def get_object(self):
         try:

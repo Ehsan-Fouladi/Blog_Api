@@ -49,18 +49,13 @@ class ChangePasswordSerializer(serializers.Serializer):
         except exceptions.ValidationError as e:
             raise serializers.ValidationError({"password": list(e.messages)})
 
-        return attrs
+        return super().validate(attrs)
 
     def validate_old_password(self, value):
         user = self.context['request'].user
         if not user.check_password(value):
             raise serializers.ValidationError(
                 {'detail': 'The provided old password is incorrect.'})
-
-    def update(self, instance, validated_data):
-        instance.set_password(validated_data['password'])
-        instance.save()
-        return {'user': instance, 'message': 'Password updated successfully!'}
 
 
 class ProfileUserSerializers(serializers.ModelSerializer):
