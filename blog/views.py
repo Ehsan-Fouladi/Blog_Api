@@ -24,5 +24,5 @@ class PostDetailApiView(APIView):
 
     def get(self, request, slug):
         post = get_object_or_404(blog, title=slug)
-        serializer = BlogSerializer(post)
+        serializer = BlogSerializer(post, context={"request": request})
         return Response(serializer.data)
