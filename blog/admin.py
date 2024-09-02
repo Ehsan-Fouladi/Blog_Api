@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import category_list, blog
+from .models import blog, Categories
 
 
-@admin.register(category_list)
+@admin.register(Categories)
 class AdminCategory(admin.ModelAdmin):
     list_display = ["title",]
     list_filter = ["title",]

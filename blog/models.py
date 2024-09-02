@@ -2,8 +2,8 @@ from django.db import models
 from account.models import User
 
 
-class category_list(models.Model):
-    title = models.CharField(max_length=70)
+class Categories(models.Model):
+    title = models.CharField(max_length=50)
 
     def __str__(self) -> str:
         return self.title
@@ -15,9 +15,9 @@ class blog(models.Model):
     title = models.SlugField(max_length=50)
     description = models.TextField()
     image = models.ImageField(upload_to="blogs/images")
-    author = models.BooleanField(True)
+    author = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    category = models.ManyToManyField(category_list, related_name="category")
+    category = models.ManyToManyField(Categories, related_name="category")
 
     class Meta:
         ordering = ["-title"]

@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from .models import blog, category_list
+from .models import blog, Categories
 
 
 class BlogCategorySerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = category_list
+        model = Categories
         fields = '__all__'
 
 
@@ -22,3 +23,16 @@ class BlogSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         image_url = obj.image.url
         return request.build_absolute_uri(image_url)
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    post = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Categories
+        fields = ["id", 'title', 'post']
+
+    def get_post(self, obj):
+        serializer = BlogSerializer(
+            obj.category, context=self.context, many=True)
+        return serializer.data
