@@ -64,6 +64,7 @@ class ProfileUserSerializers(serializers.ModelSerializer):
         fields = "__all__"
 
     def to_representation(self, instance):
+        
         if isinstance(instance, AnonymousUser):
             return {'detail': 'User Not Authenticated'}
         else:
@@ -73,4 +74,25 @@ class ProfileUserSerializers(serializers.ModelSerializer):
 class ProfileUserUpdateSerializers(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ["email", "username", "avatar", "full_name"]
+        extra_kwargs = {
+            "email": {
+                "required": False,
+            },
+            "username": {
+                "required": False,
+            }
+        }
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get("email", instance.email)
+        instance.username = validated_data.get("username", instance.username)
+        instance.full_name = validated_data.get("full_name", instance.full_name)
+
+        avatar = validated_data.get("avatar")
+        if avatar:
+            instance.avatar = avatar
+
+        instance.save()
+
+        return super().update(instance, validated_data)
