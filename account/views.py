@@ -61,7 +61,7 @@ class ProfileUserUpdateApiView(generics.RetrieveUpdateAPIView):
     """
     serializer_class = ProfileUserUpdateSerializers
     queryset = User.objects.all()
-    parser_classes = (MultiPartParser,)
+    parser_classes = [MultiPartParser,]
     permission_classes = [IsAuthenticated,]
 
     def get_object(self):
