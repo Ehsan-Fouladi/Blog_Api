@@ -50,6 +50,7 @@ class ProfileUserApiView(generics.RetrieveAPIView):
     Retrieve user profile.
     """
     serializer_class = ProfileUserSerializers
+    permission_classes = [IsAuthenticated,]
 
     def get_object(self):
         return self.request.user
